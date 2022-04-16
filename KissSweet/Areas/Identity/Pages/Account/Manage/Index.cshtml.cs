@@ -7,6 +7,7 @@ using KissSweet.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using KissSweet.Helpers;
 
 namespace KissSweet.Areas.Identity.Pages.Account.Manage
 {
@@ -24,9 +25,13 @@ namespace KissSweet.Areas.Identity.Pages.Account.Manage
         }
 
         public string Username { get; set; }
+        public bool PhoneNumberConfirmed { get; set; }
 
         [TempData]
-        public string StatusMessage { get; set; }
+        public string PhoneNumberConfirmedStatusMessage { get; set; }
+
+        [TempData]
+        public string ProfileStatusMessage { get; set; }
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -36,6 +41,17 @@ namespace KissSweet.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "Birth Date")]
+            [DataType(DataType.Date)]
+            public DateTime DOB { get; set; }
+
+            [Display(Name = "Name")]
+            [DataType(DataType.Text)]
+            public string Name { get; set; }
+
+            [Display(Name = "Gender")]
+            public GenderType Gender { get; set; }          //性別
         }
 
         private async Task LoadAsync(KissSweetUser user)
@@ -47,7 +63,10 @@ namespace KissSweet.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                DOB = user.DOB,
+                Name = user.Name,
+                Gender = user.Gender,
+                PhoneNumber = phoneNumber,
             };
         }
 
@@ -57,6 +76,11 @@ namespace KissSweet.Areas.Identity.Pages.Account.Manage
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+            PhoneNumberConfirmed = user.PhoneNumberConfirmed;
+            if (!PhoneNumberConfirmed)
+            {
+                PhoneNumberConfirmedStatusMessage = "Error" + "手機尚未進行認證，請先認證手機才能使用其他功能";
             }
 
             await LoadAsync(user);
@@ -78,18 +102,29 @@ namespace KissSweet.Areas.Identity.Pages.Account.Manage
             }
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            
+            if (Input.PhoneNumber != phoneNumber || Input.DOB != user.DOB || Input.Name != user.Name || Input.Gender != user.Gender)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
+                user.DOB = Input.DOB;
+                user.Name = Input.Name;
+                user.PhoneNumber = Input.PhoneNumber;
+                user.Gender = Input.Gender;
+
+                if (Input.PhoneNumber != phoneNumber)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    user.PhoneNumberConfirmed = false;
+                }
+                var result = await _userManager.UpdateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    ProfileStatusMessage = "Error" + "無預期的錯誤，請重新更改資料";
                     return RedirectToPage();
                 }
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            ProfileStatusMessage = "您的資料已更改成功";
             return RedirectToPage();
         }
     }

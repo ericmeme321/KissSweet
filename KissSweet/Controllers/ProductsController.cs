@@ -30,16 +30,22 @@ namespace KissSweet.Controllers
             List<Product> products = new List<Product>();
 
             //判斷如果有傳入類別編號，就篩選那個類別的商品出來
-            if (cId != null)
+            try
             {
-                var result = _context.Category.Single(x => x.Id.Equals(cId));
-                products = _context.Entry(result).Collection(x => x.Products).Query().ToList();
+                if (cId != null)
+                {
+                    var result = _context.Category.Single(x => x.Id.Equals(cId));
+                    products = _context.Entry(result).Collection(x => x.Products).Query().ToList();
+                }
+                else
+                {
+                    products = _context.Product.Include(p => p.Category).ToList();
+                }
             }
-            else
+            catch(System.InvalidOperationException e)
             {
                 products = _context.Product.Include(p => p.Category).ToList();
             }
-
             //把取出來的資料加入ViewModel  
             foreach (var product in products)
             {
@@ -66,6 +72,7 @@ namespace KissSweet.Controllers
             DetailViewModel dvm = new DetailViewModel();
             var product = await _context.Product
                 .Include(p => p.Category)
+                .Include(c => c.Comments)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (product == null)
@@ -95,6 +102,22 @@ namespace KissSweet.Controllers
             {
                 return "";
             }
+        }
+
+        [HttpPost]
+        [Authorize]  //一定要登入才能留言
+        public async Task<IActionResult> AddComment(int Id, string myComment)
+        {
+            var comment = new Comment()
+            {
+                ProductID = Id,
+                Content = myComment,
+                UserName = HttpContext.User.Identity.Name,  //取得登入中的帳號
+                Time = DateTime.Now  //取得當下時間
+            };
+            _context.Add(comment);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", new { id = Id });
         }
     }
 }

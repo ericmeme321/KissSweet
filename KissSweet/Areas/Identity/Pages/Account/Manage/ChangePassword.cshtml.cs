@@ -93,7 +93,7 @@ namespace KissSweet.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
+            StatusMessage = "您的密碼已經修改成功";
 
             return RedirectToPage();
         }

@@ -13,6 +13,8 @@ namespace KissSweet.Areas.Identity.Data
         public DateTime DOB { get; set; }               //生日
         public GenderType Gender { get; set; }          //性別
         public DateTime RegistrationDate { get; set; }  //註冊日期
+        public string PhoneNumberToken { get; set; }
+        public string EmailToken { get; set; }
     }
 
     public enum GenderType

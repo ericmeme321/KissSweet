@@ -1,0 +1,49 @@
+﻿@page
+@model EmailTokenModel
+
+@section Scripts {
+    <script>
+        function ShowMessage() {
+            toastr["success"]("驗證碼已送出!");
+        }
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}
+<html lang="zh">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+</head>
+<h1>電子信箱驗證</h1>
+<partial name="_StatusMessage" model="Model.EmailTokenStatusMessage" />
+<body onload="initial()">
+    <div class="card shadow-sm rounded">
+        <div class="row card-body">
+            <div class="col-4"></div>
+            <div class="col-4">
+                @if (Model.DbEmailConfirmed)
+                {
+                    <a class="btn btn-primary btn-lg btn-block" asp-controller="Home" asp-action="Index">回首頁</a>
+                }
+                else
+                {
+                    <form method="post">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Input.EmailToken">電子信箱驗證碼</label>
+                            <input asp-for="Input.EmailToken" class="form-control" />
+                            <span asp-validation-for="Input.EmailToken" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">送出</button>
+                    </form>
+                    <form method="post">
+                        <button class="btn btn-primary" type="submit" asp-page-handler="SendMailToken" onclick="ShowMessage()">重寄驗證信</button>
+                    </form>
+                }
+                </div>
+        </div>
+    </div>
+</body>
+</html>

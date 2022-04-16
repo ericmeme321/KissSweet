@@ -1,64 +1,114 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - KissSweet</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/fontawesome-free-6.0.0-web/css/all.css" />
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>KissSweet | 吻甜</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="~/Image/KissSweet2.png" rel="icon">
+    <link href="~/Image/KissSweet2.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Inter:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="~/lib/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" type="text/css">
+    <link href="~/lib/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css">
+    <link href="~/lib/glightbox/css/glightbox.min.css" rel="stylesheet" type="text/css">
+    <link href="~/lib/aos/aos.css" rel="stylesheet" type="text/css">
+
+    <!-- Template Main CSS Files -->
+    <link href="~/css//variables.css" rel="stylesheet" type="text/css">
+    <link href="~/css//main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <!-- ======= Header ======= -->
+    <header id="header" class="header d-flex align-items-center fixed-top mb-md-0">
+        <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+
+            <a asp-controller="home" asp-action="index" class="logo d-flex align-items-center">
+                <!-- Uncomment the line below if you also wish to use an image logo -->
+                <!-- <img src="KissSweet2.png" /> -->
+                <h1>KissSweet</h1>
+            </a>
+
+            <nav id="navbar" class="navbar">
+                <ul>
+                    <li><a asp-controller="home" asp-action="index">首頁</a></li>
+                    <li><a asp-controller="Products" asp-action="index">所有甜點</a></li>
+                    <li><a asp-controller="Info" asp-action="index">關於吻甜</a></li>
+                    <li><a href="#">退換貨條款</a></li>
+                    <li><a href="#">付款方式介紹</a></li>
+                    <li><a href="#">隱私政策</a></li>
+                </ul>
+            </nav><!-- .navbar -->
+
+            <partial name="_LoginPartial" />
+
+        </div>
+
+    </header><!-- End Header -->
+
+    <!-- Vendor JS Files -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/swiper/swiper-bundle.min.js"></script>
+    <script src="~/lib/glightbox/js/glightbox.min.js"></script>
+    <script src="~/lib/aos/aos.js"></script>
+    <script src="~/lib/php-email-form/validate.js"></script>
+
+    <!-- Template Main JS File -->
+    <script src="~/js/main2.js"></script>
+
+    <main id="main" role="main">
+        @RenderBody()
+    </main>
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+
+        <div class="footer-content">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/Image/KissSweet2.png" height="100"/></a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">公告</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">店鋪資訊</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">產品</a>
-                        </li>
 
-                    </ul>
-                    <partial name="_LoginPartial" />
+                <div class="row g-5">
+                    <!-- <div class="col-lg-4">
+                      <h3 class="footer-heading">About ZenBlog</h3>
+                      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam ab, perspiciatis beatae autem deleniti voluptate nulla a dolores, exercitationem eveniet libero laudantium recusandae officiis qui aliquid blanditiis omnis quae. Explicabo?</p>
+                      <p><a href="about.html" class="footer-link-more">Learn More</a></p>
+                    </div> -->
+                    <div class="col-6 col-lg-4">
+                        <h3 class="footer-heading">導覽列</h3>
+                        <ul class="footer-links list-unstyled">
+                            <li><a href="index.html"><i class="bi bi-chevron-right"></i> 首頁</a></li>
+                            <li><a href="index.html"><i class="bi bi-chevron-right"></i> 吻甜簡介</a></li>
+                            <li><a href="category.html"><i class="bi bi-chevron-right"></i> 所有甜點</a></li>
+                            <li><a href="about.html"><i class="bi bi-chevron-right"></i> 關於吻甜</a></li>
+                            <li><a href="contact.html"><i class="bi bi-chevron-right"></i> 聯繫方式</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-6 col-lg-2">
+                        <h3 class="footer-heading">甜點分類</h3>
+                        <ul class="footer-links list-unstyled">
+                            <li><a href="category.html"><i class="bi bi-chevron-right"></i> 馬卡龍</a></li>
+                            <li><a href="category.html"><i class="bi bi-chevron-right"></i> 雪花餅</a></li>
+                            <li><a href="category.html"><i class="bi bi-chevron-right"></i> 曲奇餅乾</a></li>
+                            <li><a href="category.html"><i class="bi bi-chevron-right"></i> 雪球餅乾</a></li>
+                            <li><a href="category.html"><i class="bi bi-chevron-right"></i> 達克瓦茲</a></li>
+                        </ul>
+                    </div>
                 </div>
-                <form class="d-flex justify-content-end pl-3">
-                    <button class="btn btn-outline-dark" type="submit" asp-area="" asp-controller="Cart" asp-action="Index">
-                        <i class="fas fa-shopping-cart"></i>
-                        購物車
-                        <span class="badge bg-dark text-white m-1 rounded-pill"></span>
-                    </button>
-                </form>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - KissSweet - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+        <div class="footer-legal">
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

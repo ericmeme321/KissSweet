@@ -20,6 +20,11 @@ namespace KissSweet.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var items = await _context.Category.ToListAsync();
+
+            foreach (var item in items)
+            {
+                System.Diagnostics.Debug.WriteLine(item.Name);
+            }
             return View(items);
         }
     }

@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace KissSweet.Areas.Identity.Pages.Account.Manage
 {
@@ -35,6 +34,9 @@ namespace KissSweet.Areas.Identity.Pages.Account.Manage
         public string Email { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
+
+        [TempData]
+        public string EmailConfirmedStatusMessage { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -72,6 +74,11 @@ namespace KissSweet.Areas.Identity.Pages.Account.Manage
             }
 
             await LoadAsync(user);
+            if (!IsEmailConfirmed)
+            {
+                EmailConfirmedStatusMessage = "Error" + "電子信箱尚未進行認證，請先認證手機才能使用其他功能";
+            }
+
             return Page();
         }
 
@@ -92,57 +99,69 @@ namespace KissSweet.Areas.Identity.Pages.Account.Manage
             var email = await _userManager.GetEmailAsync(user);
             if (Input.NewEmail != email)
             {
-                var userId = await _userManager.GetUserIdAsync(user);
-                var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ConfirmEmailChange",
-                    pageHandler: null,
-                    values: new { userId = userId, email = Input.NewEmail, code = code },
-                    protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(
-                    Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                user.Email = Input.NewEmail;
+                user.UserName = Input.NewEmail;
+                user.EmailConfirmed = false;
+                var result = await _userManager.UpdateAsync(user);
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                if (!result.Succeeded)
+                {
+                    StatusMessage = "Error" + "無預期的錯誤，請重新更改資料";
+                    return RedirectToPage();
+                }
+                else
+                {
+                    StatusMessage = "您的電子郵件已更改";
+                }
+                //var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
+                //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                //var callbackUrl = Url.Page(
+                //    "/Account/ConfirmEmailChange",
+                //    pageHandler: null,
+                //    values: new { userId = userId, email = Input.NewEmail, code = code },
+                //    protocol: Request.Scheme);
+                //await _emailSender.SendEmailAsync(
+                //    Input.NewEmail,
+                //    "Confirm your email",
+                //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
                 return RedirectToPage();
             }
 
-            StatusMessage = "Your email is unchanged.";
+            StatusMessage = "Error" + "電子信箱不可相同";
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnPostSendVerificationEmailAsync()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+        //public async task<iactionresult> onpostsendverificationemailasync()
+        //{
+        //    var user = await _usermanager.getuserasync(user);
+        //    if (user == null)
+        //    {
+        //        return notfound($"unable to load user with id '{_usermanager.getuserid(user)}'.");
+        //    }
 
-            if (!ModelState.IsValid)
-            {
-                await LoadAsync(user);
-                return Page();
-            }
+        //    if (!modelstate.isvalid)
+        //    {
+        //        await loadasync(user);
+        //        return page();
+        //    }
 
-            var userId = await _userManager.GetUserIdAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var callbackUrl = Url.Page(
-                "/Account/ConfirmEmail",
-                pageHandler: null,
-                values: new { area = "Identity", userId = userId, code = code },
-                protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+        //    var userid = await _usermanager.getuseridasync(user);
+        //    var email = await _usermanager.getemailasync(user);
+        //    var code = await _usermanager.generateemailconfirmationtokenasync(user);
+        //    code = webencoders.base64urlencode(encoding.utf8.getbytes(code));
+        //    var callbackurl = url.page(
+        //        "/account/confirmemail",
+        //        pagehandler: null,
+        //        values: new { area = "identity", userid = userid, code = code },
+        //        protocol: request.scheme);
+        //    await _emailsender.sendemailasync(
+        //        email,
+        //        "confirm your email",
+        //        $"please confirm your account by <a href='{htmlencoder.default.encode(callbackurl)}'>clicking here</a>.");
 
-            StatusMessage = "Verification email sent. Please check your email.";
-            return RedirectToPage();
-        }
+        //    statusmessage = "verification email sent. please check your email.";
+        //    return redirecttopage();
+        //}
     }
 }

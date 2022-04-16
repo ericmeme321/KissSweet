@@ -44,7 +44,7 @@ namespace KissSweet.Areas.Identity.Pages.Account
             var result = await _userManager.ChangeEmailAsync(user, email, code);
             if (!result.Succeeded)
             {
-                StatusMessage = "Error changing email.";
+                StatusMessage = "電子信箱修改失敗";
                 return Page();
             }
 
@@ -58,7 +58,7 @@ namespace KissSweet.Areas.Identity.Pages.Account
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Thank you for confirming your email change.";
+            StatusMessage = "電子信箱修改成功";
             return Page();
         }
     }
